@@ -1,0 +1,27 @@
+body {
+  padding-top: 50px;
+}
+
+.content {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+#board {
+  background: #DED6AD;
+  padding: 1em;
+}
+
+.board-row > div {
+  float: left;
+  height: 48px;
+  width: 48px;
+  background-size: 100% 100%;
+}
+
+.board-row > div > div {
+  float: left;
+  height: 48px;
+  width: 48px;
+  background-size: 100% 100%;
+}
