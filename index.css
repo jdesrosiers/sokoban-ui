@@ -14,8 +14,8 @@ body {
 
 .board-row > div {
   float: left;
-  height: 48px;
-  width: 48px;
+  height: 32px;
+  width: 32px;
   background-size: 100% 100%;
 }
 

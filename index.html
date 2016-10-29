@@ -45,10 +45,80 @@
 
       <div class="content">
         <h1>Sokoban</h1>
-        <div class="panel panel-default">
-          <div class="panel-body">
-            <div id="board"></div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="panel panel-default">
+            <div class="panel-heading">Game</div>
+            <div class="panel-body">
+              <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" style="width: 100%" type="button" id="games-selector" data-toggle="dropdown">
+                  Preset Levels
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" style="width: 100%">
+                  <li><a href="#" id="level-1">Level 1</a></li>
+                </ul>
+              </div>
+              <textarea id="level" rows="6" class="form-control" style="width: 100%; white-space: nowrap;"></textarea>
+            </div>
           </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">Solution</div>
+            <div class="panel-body">
+              <textarea id="solution" class="form-control" style="width: 100%">R U R R D D D D L D R U U U U L L L R D R D R D D L L D L L U U D R</textarea>
+              <div class="input-group">
+                <span class="input-group-addon">Speed</span>
+                <input type="text" id="speed" class="form-control" placeholder="250" value="250">
+              </div>
+              <button id="play" type="button" class="btn btn-default btn-block">Play</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="panel panel-default">
+            <div class="panel-heading">Game Board</div>
+            <div class="panel-body">
+              <div id="board"></div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">Manual Controls</div>
+            <div class="panel-body">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-md-4"></div>
+                  <div class="col-md-4">
+                    <button id="play-up" type="button" class="btn btn-default btn-block">Up</button>
+                  </div>
+                  <div class="col-md-4"></div>
+                </div>
+                <div class="row">
+                  <div class="col-md-2"></div>
+                  <div class="col-md-4">
+                    <button id="play-left" type="button" class="btn btn-default btn-block">Left</button>
+                  </div>
+                  <div class="col-md-4">
+                    <button id="play-right" type="button" class="btn btn-default btn-block">Right</button>
+                  </div>
+                  <div class="col-md-2"></div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4"></div>
+                  <div class="col-md-4">
+                    <button id="play-down" type="button" class="btn btn-default btn-block">Down</button>
+                  </div>
+                  <div class="col-md-4"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">Logs</div>
+        <div class="panel-body">
+          <textarea id="log" readonly rows="10" class="form-control" style="width: 100%; border-color: Transparent;"></textarea>
         </div>
       </div>
 
@@ -91,49 +161,104 @@
     <script type="application/javascript">
       requirejs(["sokoban/game", "sokoban/game-state"], function (Game, GameState) {
         jQuery(function ($) {
-          var drawBoard = function (game, state) {
+          var game;
+          var state;
+          var initialState;
+
+          var buildGame = function () {
+            var level = $("#level").val().split("\n");
+            var size = level[0];
+            var walls = level[1];
+            var boxes = level[2];
+            var storage = level[3];
+            var player = level[4];
+
+            game = Game.factory(size, walls, storage);
+            initialState = GameState.factory(boxes, player);
+          }
+
+          var move = function (dir) {
+            console.log("move:", dir, "; allowed moves:", game.allowedMoves(state));
+            var log = "move: " + dir + " ; allowed moves: [" + game.allowedMoves(state).join(", ") + "]\n";
+            $("#log").append(log);
+            if (!game.canMove(state, dir)) {
+              $("#log").append("Illegal move '" + dir + "'");
+              throw "Illegal move '" + dir + "'";
+            }
+            state = state.move(dir);
+          };
+
+          var drawBoard = function () {
             var boardTemplate = _.template($("#board-template").html());
             $("#board").html(boardTemplate({ game: game, state: state }));
           };
 
-          var run = function (game, state, moves, delay) {
-            drawBoard(game, state);
+          var run = function (moves, delay) {
+            drawBoard();
             if (moves.length > 0) {
-              console.log("allowed moves:", game.allowedMoves(state), "move:", moves[0]);
-              if (!game.canMove(state, moves[0])) {
-                throw "Illegal move '" + moves[0] + "'";
-              }
+              move(moves[0]);
+
               window.setTimeout(function () {
-                run(game, state.move(moves[0]), _.tail(moves), delay);
+                run(_.tail(moves), delay);
               }, delay);
             }
           };
 
-          var size = "8 9";
-          var walls = ["35",
-          "2 0", "3 0", "4 0", "5 0", "6 0",
-          "0 1", "1 1", "2 1", "6 1",
-          "0 2", "6 2",
-          "0 3", "1 3", "2 3", "6 3",
-          "0 4", "2 4", "3 4", "6 4",
-          "0 5", "2 5", "6 5", "7 5",
-          "0 6", "7 6",
-          "0 7", "7 7",
-          "0 8", "1 8", "2 8", "3 8", "4 8", "5 8", "6 8", "7 8",
-          ].join(" ");
-          var storage = ["0", "1 2", "5 3", "1 4", "4 5", "3 6", "6 6", "4 7"].join(" ");
-          var boxes = ["0", "3 2", "4 3", "4 4", "1 6", "3 6", "4 6", "5 6"].join(" ");
-          var player = "2 2";
+          $("#play").click(function () {
+            var solution = $("#solution").val();
+            var speed = $("#speed").val();
+            state = initialState;
+            run(solution.split(" "), speed);
+          });
 
-          var game = Game.factory(size, walls, storage);
-          var initialState = GameState.factory(boxes, player);
+          $("#level").on("change keyup paste", function () {
+            buildGame();
+            drawBoard();
+          });
 
-          var moves = [
-            "R", "U", "R", "R", "D", "D", "D", "D", "L", "D", "R", "U", "U", "U", "U",
-            "L", "L", "L", "R", "D", "R", "D", "R", "D", "D", "L", "L", "D", "L", "L",
-            "U", "U", "D", "R"
-          ];
-          run(game, initialState, moves, 250);
+          $("#level-1").click(function () {
+            var size = "8 9";
+            var walls = ["35",
+            "2 0", "3 0", "4 0", "5 0", "6 0",
+            "0 1", "1 1", "2 1", "6 1",
+            "0 2", "6 2",
+            "0 3", "1 3", "2 3", "6 3",
+            "0 4", "2 4", "3 4", "6 4",
+            "0 5", "2 5", "6 5", "7 5",
+            "0 6", "7 6",
+            "0 7", "7 7",
+            "0 8", "1 8", "2 8", "3 8", "4 8", "5 8", "6 8", "7 8",
+            ].join(" ");
+            var storage = ["7", "1 2", "5 3", "1 4", "4 5", "3 6", "6 6", "4 7"].join(" ");
+            var boxes = ["7", "3 2", "4 3", "4 4", "1 6", "3 6", "4 6", "5 6"].join(" ");
+            var player = "2 2";
+            var level = [size, walls, boxes, storage, player].join("\n");
+
+            $("#level").val(level);
+            buildGame();
+            state = initialState;
+            drawBoard();
+          }).click();
+
+          $("#play-up").click(function () {
+            move("U");
+            drawBoard();
+          });
+
+          $("#play-left").click(function () {
+            move("L");
+            drawBoard();
+          });
+
+          $("#play-right").click(function () {
+            move("R");
+            drawBoard();
+          });
+
+          $("#play-down").click(function () {
+            move("D");
+            drawBoard();
+          });
         });
       });
     </script>
