@@ -34,8 +34,7 @@
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="builder.html">Builder</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -138,19 +137,19 @@
       <div class="board-row">
         <% for (var x = 1; x <= game.getSize().getX(); x++) { %>
         <% if (game.isWall(x, y)) { %>
-        <div id="cell-<%= x %>-<%= y %>" style="background-image: url(<%= 'img/wall.png' %>)"></div>
+        <div id="cell-<%= x %>-<%= y %>" style="background-image: url(img/wall.png)"></div>
         <% } else if (state.isPlayer(x, y)) { %>
-        <div id="cell-<%= x %>-<%= y %>" style="background-image: url(<%= 'img/player.png' %>)"></div>
+        <div id="cell-<%= x %>-<%= y %>" style="background-image: url(img/player.png)"></div>
         <% } else if (game.isStorage(x, y)) { %>
         <% if (state.isBox(x, y)) { %>
-        <div id="cell-<%= x %>-<%= y %>" style="background-image: url(<%= 'img/goal-box.png' %>)"></div>
+        <div id="cell-<%= x %>-<%= y %>" style="background-image: url(img/goal-box.png)"></div>
         <% } else { %>
-        <div id="cell-<%= x %>-<%= y %>" style="background-image: url(<%= 'img/goal.png' %>)"></div>
+        <div id="cell-<%= x %>-<%= y %>" style="background-image: url(img/goal.png)"></div>
         <% } %>
         <% } else if (state.isBox(x, y)) { %>
-        <div id="cell-<%= x %>-<%= y %>" style="background-image: url(<%= 'img/box.png' %>)"></div>
+        <div id="cell-<%= x %>-<%= y %>" style="background-image: url(img/box.png)"></div>
         <% } else { %>
-        <div id="cell-<%= x %>-<%= y %>" style="background-image: url(<%= 'img/ground.png' %>)"></div>
+        <div id="cell-<%= x %>-<%= y %>" style="background-image: url(img/ground.png)"></div>
         <% } %>
         <% } %>
       </div>
