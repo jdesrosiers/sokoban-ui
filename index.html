@@ -74,6 +74,8 @@
               <button type="button" id="clear" class="btn btn-default" style="width: 100%">Clear</button>
               <button type="button" id="reset" class="btn btn-default" style="width: 100%">Reset</button>
               <textarea id="level" readonly rows="6" class="form-control" style="width: 100%; border-color: Transparent; white-space: pre;"></textarea>
+              <textarea id="load-board" rows="6" class="form-control" style="width: 100%; white-space: pre;"></textarea>
+              <button type="button" id="load" class="btn btn-default" style="width: 100%">Load Board</button>
             </div>
           </div>
           <div class="panel panel-default">
@@ -178,20 +180,40 @@
           var state;
           var initialState;
 
-          var board = {
-            "W": ["3 1", "4 1", "5 1", "6 1", "7 1",
-              "1 2", "2 2", "3 2", "7 2",
-              "1 3", "7 3",
-              "1 4", "2 4", "3 4", "7 4",
-              "1 5", "3 5", "4 5", "7 5",
-              "1 6", "3 6", "7 6", "8 6",
-              "1 7", "8 7",
-              "1 8", "8 8",
-              "1 9", "2 9", "3 9", "4 9", "5 9", "6 9", "7 9", "8 9"],
-            "B": ["4 3", "5 4", "5 5", "2 7", "4 7", "5 7", "6 7"],
-            "S": ["2 3", "6 4", "2 5", "5 6", "4 7", "7 7", "5 8"],
-            "P": "3 3"
+          var slide = function (list, n) {
+            result = [];
+
+            while (list.length > 0) {
+              var pair = _.take(list, n);
+              result.push(pair.join(" "));
+              list = _.drop(list, n);
+            }
+
+            return result;
           };
+
+          var parseBoard = function(text) {
+            var parts = text.split("\n");
+            var size = parts[0].split(" ");
+            $("#width").val(size[0]);
+            $("#height").val(size[1]);
+
+            return {
+              "W": slide(_.tail(parts[1].split(" ")), 2),
+              "B": slide(_.tail(parts[2].split(" ")), 2),
+              "S": slide(_.tail(parts[3].split(" ")), 2),
+              "P": parts[4]
+            };
+          }
+
+          var exampleLevel = [
+            "8 9",
+            "35 3 1 4 1 5 1 6 1 7 1 1 2 2 2 3 2 7 2 1 3 7 3 1 4 2 4 3 4 7 4 1 5 3 5 4 5 7 5 1 6 3 6 7 6 8 6 1 7 8 7 1 8 8 8 1 9 2 9 3 9 4 9 5 9 6 9 7 9 8 9",
+            "7 4 3 5 4 5 5 2 7 4 7 5 7 6 7",
+            "7 2 3 6 4 2 5 5 6 4 7 7 7 5 8",
+            "3 3"
+          ].join("\n");
+          var board = parseBoard(exampleLevel);
           var type = "W";
 
           var buildGame = function () {
@@ -238,6 +260,24 @@
               drawBoard();
             });
           };
+
+          var run = function (moves, delay) {
+            drawBoard();
+            if (moves.length > 0) {
+              move(moves[0]);
+
+              window.setTimeout(function () {
+                run(_.tail(moves), delay);
+              }, delay);
+            }
+          };
+
+          $("#load").on("click", function () {
+            board = parseBoard($("#load-board").val());
+            buildGame();
+            initialState = state;
+            drawBoard();
+          });
 
           $("#width").on("input", function () {
             buildGame();
@@ -289,17 +329,6 @@
             $(this).addClass("type-selected");
             type = "P";
           });
-
-          var run = function (moves, delay) {
-            drawBoard();
-            if (moves.length > 0) {
-              move(moves[0]);
-
-              window.setTimeout(function () {
-                run(_.tail(moves), delay);
-              }, delay);
-            }
-          };
 
           $("#play").click(function () {
             var solution = $("#solution").val();
