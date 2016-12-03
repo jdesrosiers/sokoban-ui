@@ -28,9 +28,9 @@ define(["sokoban/point", "sokoban/points"], function (Point, points) {
     return GAME_STATE;
   };
 
-  GameState.factory = function (boxes, player) {
-    player = Point.fromPair(player.split(" "));
-    boxes = points(boxes.split(" "));
+  GameState.factory = function (boxes, player, inverse) {
+    player = Point.fromPair(player.split(" "), inverse);
+    boxes = points(boxes.split(" "), inverse);
 
     return GameState(boxes, player);
   };

@@ -75,7 +75,12 @@
               <button type="button" id="reset" class="btn btn-default" style="width: 100%">Reset</button>
               <textarea id="level" readonly rows="6" class="form-control" style="width: 100%; border-color: Transparent; white-space: pre;"></textarea>
               <textarea id="load-board" rows="6" class="form-control" style="width: 100%; white-space: pre;"></textarea>
-              <button type="button" id="load" class="btn btn-default" style="width: 100%">Load Board</button>
+              <div class="input-group" style="width: 100%">
+                <span class="input-group-addon">
+                  Inverse&nbsp;<input type="checkbox" id="inverse">
+                </span>
+                <button type="button" id="load" class="btn btn-default" style="width: 100%">Load Board</button>
+              </div>
             </div>
           </div>
           <div class="panel panel-default">
@@ -94,7 +99,15 @@
           <div class="panel panel-default">
             <div class="panel-heading">Game Board</div>
             <div class="panel-body">
-              <div id="board"></div>
+              <div id="board" class="normal"></div>
+            </div>
+            <div class="input-group" style="width: 100%">
+              <span class="input-group-addon">
+                <input type="radio" id="normal" name="size" checked>&nbsp;Normal
+                <input type="radio" id="small" name="size">&nbsp;Small
+                <input type="radio" id="smaller" name="size">&nbsp;Smaller
+                <input type="radio" id="tiny" name="size">&nbsp;Tiny
+              </span>
             </div>
           </div>
           <div class="panel panel-default">
@@ -225,8 +238,8 @@
 
             $("#level").text([size, walls, boxes, storage, player].join("\n"));
 
-            game = Game.factory(size, walls, storage);
-            state = GameState.factory(boxes, player);
+            game = Game.factory(size, walls, storage, $("#inverse").prop("checked"));
+            state = GameState.factory(boxes, player, $("#inverse").prop("checked"));
           }
 
           var move = function (dir) {
@@ -355,6 +368,22 @@
           $("#play-down").click(function () {
             move("D");
             drawBoard();
+          });
+
+          $("#normal").on("click", function () {
+            $('#board').addClass("normal").removeClass("small").removeClass("smaller").removeClass("tiny")
+          });
+
+          $("#small").on("click", function () {
+            $('#board').addClass("small").removeClass("smaller").removeClass("tiny").removeClass("normal")
+          });
+
+          $("#smaller").on("click", function () {
+            $('#board').addClass("smaller").removeClass("tiny").removeClass("normal").removeClass("small")
+          });
+
+          $("#tiny").on("click", function () {
+            $('#board').addClass("tiny").removeClass("normal").removeClass("small").removeClass("smaller")
           });
 
           buildGame();

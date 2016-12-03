@@ -39,10 +39,10 @@ define(["sokoban/point", "sokoban/points"], function (Point, points) {
     return GAME;
   };
 
-  Game.factory = function (size, walls, storage) {
+  Game.factory = function (size, walls, storage, inverse) {
     size = Point.fromPair(size.split(" "));
-    walls = points(walls.split(" "));
-    storage = points(storage.split(" "));
+    walls = points(walls.split(" "), inverse);
+    storage = points(storage.split(" "), inverse);
 
     return Game(size, walls, storage);
   };

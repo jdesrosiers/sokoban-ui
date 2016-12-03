@@ -14,9 +14,27 @@ body {
 
 .board-row > div {
   float: left;
+  background-size: 100% 100%;
+}
+
+.normal > .board-row > div {
   height: 32px;
   width: 32px;
-  background-size: 100% 100%;
+}
+
+.small > .board-row > div {
+  height: 24px;
+  width: 24px;
+}
+
+.smaller > .board-row > div {
+  height: 16px;
+  width: 16px;
+}
+
+.tiny > .board-row > div {
+  height: 12px;
+  width: 12px;
 }
 
 .type-selected {

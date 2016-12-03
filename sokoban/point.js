@@ -28,8 +28,12 @@ define(function () {
     return POINT;
   }, function (x, y) { return x + " " + y });
 
-  Point.fromPair = function (pair) {
-    return Point(parseInt(pair[0]), parseInt(pair[1]));
+  Point.fromPair = function (pair, inverse) {
+    if (inverse) {
+      return Point(parseInt(pair[1]), parseInt(pair[0]));
+    } else {
+      return Point(parseInt(pair[0]), parseInt(pair[1]));
+    }
   };
 
   Point.fromString = function (str) {
@@ -37,5 +41,4 @@ define(function () {
   };
 
   return Point;
-
 });
