@@ -259,7 +259,12 @@
 
             $(".cell").on("click", function (event) {
               var matches = event.toElement.id.match(/cell-(\d+)-(\d+)/);
-              var loc = [matches[1], matches[2]].join(" ");
+              var loc;
+              if ($("#inverse").prop("checked")) {
+                loc = [matches[2], matches[1]].join(" ");
+              } else {
+                loc = [matches[1], matches[2]].join(" ");
+              }
               if (type == "P") {
                 board["P"] = loc;
               } else if (_.contains(board[type], loc)) {
