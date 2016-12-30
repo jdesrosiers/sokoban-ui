@@ -1,7 +1,4 @@
 Sokoban UI
 ==========
 
-Key features
-* Separation of game board and game state
-* allowedMoves can be used for adding to the frontier
-* Logging in the console
+A UI for building levels and testing the Sokoban Solver at https://github.com/jdesrosiers/sokoban-solver.
