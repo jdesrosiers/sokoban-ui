@@ -258,7 +258,7 @@
             $("#board").html(boardTemplate({ game: game, state: state }));
 
             $(".cell").on("click", function (event) {
-              var matches = event.toElement.id.match(/cell-(\d+)-(\d+)/);
+              var matches = event.currentTarget.id.match(/cell-(\d+)-(\d+)/);
               var loc;
               if ($("#inverse").prop("checked")) {
                 loc = [matches[2], matches[1]].join(" ");
